@@ -1,0 +1,68 @@
+name: Publish Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write
+  contents: write
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: 'production'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check release version
+        run: |
+          TAG_VERSION=${GITHUB_REF_NAME#v}
+          PKG_VERSION=$(jq -r '.version' package.json)
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Version mismatch: Tag=$TAG_VERSION, Package=$PKG_VERSION"
+            exit 1
+          fi
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install and Build
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run lint
+          pnpm run build
+          pnpm pack
+
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm config set //npm.pkg.github.com/:_authToken=$GITHUB_TOKEN
+          pnpm publish --access public --provenance --registry=https://npm.pkg.github.com --no-git-checks
+
+      - name: Publish to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          pnpm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          pnpm publish --access public --provenance --registry=https://registry.npmjs.org --no-git-checks
+
+      - name: Github release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: |
+            *.tgz
