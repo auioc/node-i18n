@@ -1,0 +1,44 @@
+name: Dev Build
+
+on:
+  push:
+    branches-ignore:
+      - 'test*'
+    tags-ignore:
+      - 'v*'
+
+jobs:
+  build:
+    if: ${{ !startsWith(github.event.head_commit.message, 'release') }}
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: 'dev'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install and Build
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run lint
+          pnpm run build
+          pnpm pack
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          archive: false
+          path: |
+            *.tgz
