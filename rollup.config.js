@@ -3,23 +3,30 @@ import { dts } from 'rollup-plugin-dts';
 import { execSync } from 'node:child_process';
 import pkg from './package.json' with { type: 'json' };
 
-const exec = (/** @type {string} */ cmd) => execSync(cmd).toString().trim();
-
 const dev = process.env.NODE_ENV !== 'production';
 
 const ver = (() => {
+    const exec = (/** @type {string} */ cmd) => {
+        try {
+            return execSync(cmd, { stdio: 'pipe' }).toString().trim();
+        } catch {
+            return '';
+        }
+    };
     const r = {
         version: pkg.version,
         branch: exec('git branch --show-current'),
+        tag: exec('git describe --tags --exact-match HEAD'),
         commit: exec('git rev-parse --verify HEAD'),
         dirty: exec('git status --short').length !== 0,
         dev: dev,
         text: '',
         builtTime: new Date().toISOString(),
     };
-    r.text = `v${r.version} - ${r.branch}@${r.commit.slice(0, 8)}`;
+    r.text = `v${r.version} - ${r.tag ? `tag:${r.tag}` : r.branch}@${r.commit.slice(0, 8)}`;
     if (r.dirty) r.text += '*';
     if (dev) r.text += '(dev)';
+    console.log(r);
     return r;
 })();
 
