@@ -1,0 +1,58 @@
+{
+    "name": "@auioc/i18n",
+    "version": "1.0.0",
+    "license": "MIT",
+    "description": "Lightweight translation (i18n) module",
+    "keywords": [
+        "i18n",
+        "l10n"
+    ],
+    "homepage": "https://github.com/auioc/node-i18n",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/auioc/node-i18n.git"
+    },
+    "author": {
+        "name": "AUIOC",
+        "url": "https://www.auioc.org"
+    },
+    "contributors": [
+        {
+            "name": "PCC-Studio",
+            "url": "https://www.pccstudio.com"
+        }
+    ],
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "default": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@rollup/plugin-typescript": "^11.1.6",
+        "@types/node": "^26.4.1",
+        "@typescript-eslint/parser": "^8.68.0",
+        "eslint": "^10.9.1",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-import-resolver-typescript": "^4.4.5",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-jsdoc": "^64.2.1",
+        "eslint-plugin-prettier": "^5.5.6",
+        "rollup": "^4.18.1",
+        "rollup-plugin-dts": "^6.5.1",
+        "tslib": "^2.6.3",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.68.0"
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "build": "rollup -c"
+    }
+}
