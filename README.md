@@ -13,11 +13,39 @@ Lightweight (~100 lines, <1KB) translation (i18n) module
 
 ## Install
 
+### Node.js
+
 ```sh
-npm install --save @auioc/i18n
+npm install @auioc/i18n
 ```
 
-## Examples
+```typescript
+import I18n from '@auioc/i18n';
+const i18n = new I18n();
+```
+
+### Browser
+
+#### IIFE
+
+```html
+<script src="https://unpkg.com/@auioc/i18n/dist/browser/i18n.js"></script>
+<script>
+    const i18n = new I18n();
+</script>
+```
+
+#### ECMAScript module
+
+```html
+<script type="module">
+    import I18n from "https://esm.unpkg.com/@auioc/i18n";
+    // import I18n from "https://unpkg.com/@auioc/i18n/dist/index.js";
+    const i18n = new I18n();
+</script>
+```
+
+## Example
 
 ```json5
 // en.json
