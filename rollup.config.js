@@ -68,6 +68,13 @@ const options = [
                 sourcemap: ver.dev,
                 banner: banner('Package bundle'),
             },
+            {
+                file: `dist/browser/i18n.js`,
+                format: 'iife',
+                name: 'I18n',
+                sourcemap: ver.dev,
+                banner: banner('Package bundle (IIFE format)'),
+            },
         ],
         plugins: [typescript({ removeComments: true })],
     },

@@ -25,6 +25,7 @@
     "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "browser": "dist/browser/i18n.js",
     "exports": {
         ".": {
             "default": "./dist/index.js",
