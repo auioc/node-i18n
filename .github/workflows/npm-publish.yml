@@ -55,10 +55,7 @@ jobs:
           pnpm publish --access public --provenance --registry=https://npm.pkg.github.com --no-git-checks
 
       - name: Publish to NPM
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
           pnpm publish --access public --provenance --registry=https://registry.npmjs.org --no-git-checks
 
       - name: Github release
