@@ -39,7 +39,7 @@ const i18n = new I18n();
 
 ```html
 <script type="module">
-    import I18n from "https://esm.unpkg.com/@auioc/i18n";
+    import I18n from "https://esm.sh/@auioc/i18n";
     // import I18n from "https://unpkg.com/@auioc/i18n/dist/index.js";
     const i18n = new I18n();
 </script>
