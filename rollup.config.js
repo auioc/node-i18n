@@ -1,4 +1,5 @@
 import typescript from '@rollup/plugin-typescript';
+import terser from '@rollup/plugin-terser';
 import { dts } from 'rollup-plugin-dts';
 import { execSync } from 'node:child_process';
 import pkg from './package.json' with { type: 'json' };
@@ -21,7 +22,6 @@ const ver = (() => {
         dirty: exec('git status --short').length !== 0,
         dev: dev,
         text: '',
-        builtTime: new Date().toISOString(),
     };
     r.text = `v${r.version} - ${r.tag ? `tag:${r.tag}` : r.branch}@${r.commit.slice(0, 8)}`;
     if (r.dirty) r.text += '*';
@@ -32,13 +32,13 @@ const ver = (() => {
 
 /**
  * @param {string} type
+ * @param {boolean} module
+ * TODO year range
  */
-function banner(type) {
+function banner(type, module = false) {
     return `/*!
- * ${type} of ${pkg.name}
+ * ${pkg.name}${type ? ` (${type})` : ''} ${ver.text}
  * ${pkg.homepage}
- * Generated at ${ver.builtTime}
- * Version: ${ver.text}
  * Copyright (C) 2026 AUIOC.ORG
  * Copyright (C) 2022-2026 PCC-Studio
  * Licensed under ${pkg.license} (${pkg.homepage}/blob/main/LICENSE)
@@ -66,14 +66,31 @@ const options = [
                 file: `dist/index.js`,
                 format: 'es',
                 sourcemap: ver.dev,
-                banner: banner('Package bundle'),
+                banner: banner(),
             },
             {
                 file: `dist/browser/i18n.js`,
                 format: 'iife',
                 name: 'I18n',
                 sourcemap: ver.dev,
-                banner: banner('Package bundle (IIFE format)'),
+                banner: banner('IIFE format'),
+            },
+            {
+                file: `dist/browser/i18n.min.js`,
+                format: 'iife',
+                name: 'I18n',
+                sourcemap: ver.dev,
+                banner: banner('IIFE format'),
+                plugins: [
+                    terser({
+                        mangle: {
+                            module: false,
+                            properties: {
+                                regex: /^_/,
+                            },
+                        },
+                    }),
+                ],
             },
         ],
         plugins: [typescript({ removeComments: true })],

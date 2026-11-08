@@ -13,8 +13,8 @@ const dummyTranslate: Translate = Object.assign((k: string) => k, {
 const defaultLocale = 'en_US';
 
 export default class I18n {
-    private readonly translations: Map<string, Translation> = new Map();
-    private locate: string;
+    private readonly _translations: Map<string, Translation> = new Map();
+    private _locate: string;
     private _t?: Translate;
 
     /**
@@ -23,7 +23,7 @@ export default class I18n {
      * @param translation Initial translation data, will be loaded automatically if provided
      */
     constructor(locale = defaultLocale, translation?: Translation) {
-        this.locate = locale;
+        this._locate = locale;
         if (translation) {
             this.load(locale, translation);
         }
@@ -35,7 +35,7 @@ export default class I18n {
      * @param translation Translation data for the locale
      */
     load(locale: string, translation: Translation) {
-        this.translations.set(locale, translation);
+        this._translations.set(locale, translation);
     }
 
     /**
@@ -44,10 +44,10 @@ export default class I18n {
      * @throws {Error} Throws an error if translations for the specified locale are not loaded
      */
     setLocale(locale: string): void {
-        if (!this.translations.has(locale)) {
+        if (!this._translations.has(locale)) {
             throw new Error(`Translations for locale "${locale}" not loaded`);
         }
-        this.locate = locale;
+        this._locate = locale;
     }
 
     /**
@@ -55,7 +55,7 @@ export default class I18n {
      * @returns The current locale identifier
      */
     getLocale(): string {
-        return this.locate;
+        return this._locate;
     }
 
     /**
@@ -75,10 +75,10 @@ export default class I18n {
      * i18n.translate('user.profile.title'); // Returns "Profile"
      */
     translate(key: string, params?: Record<string, string>): string {
-        let result = this.get(key, this.locate);
+        let result = this._get(key, this._locate);
 
-        if (result === undefined && this.locate !== defaultLocale) {
-            result = this.get(key, defaultLocale);
+        if (result === undefined && this._locate !== defaultLocale) {
+            result = this._get(key, defaultLocale);
         }
 
         if (result === undefined) {
@@ -86,7 +86,7 @@ export default class I18n {
         }
 
         if (typeof result === 'string' && params) {
-            result = this.interpolate(result, params);
+            result = this._interpolate(result, params);
         }
 
         return result;
@@ -158,8 +158,8 @@ export default class I18n {
         return this._t;
     }
 
-    private get(key: string, locale: string): string | undefined {
-        const translations = this.translations.get(locale);
+    private _get(key: string, locale: string): string | undefined {
+        const translations = this._translations.get(locale);
         if (!translations) return undefined;
 
         let result: any;
@@ -171,7 +171,7 @@ export default class I18n {
         return typeof result === 'string' ? result : undefined;
     }
 
-    private interpolate(text: string, params: Record<string, string>): string {
+    private _interpolate(text: string, params: Record<string, string>): string {
         return text.replace(/\{(\w+)\}/g, (match, key) => {
             return params[key] !== undefined ? String(params[key]) : match;
         });

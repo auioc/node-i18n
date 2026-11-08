@@ -30,6 +30,7 @@ const i18n = new I18n();
 
 ```html
 <script src="https://unpkg.com/@auioc/i18n/dist/browser/i18n.js"></script>
+<!-- Or minified "https://unpkg.com/@auioc/i18n/dist/browser/i18n.min.js" -->
 <script>
     const i18n = new I18n();
 </script>
